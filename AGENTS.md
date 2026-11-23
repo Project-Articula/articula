@@ -1,3 +1,5 @@
+[English](AGENTS.md) · [繁體中文](AGENTS.zh-TW.md)
+
 # AGENTS.md — rules of engagement for AI agents
 
 This file tells any AI agent (including ours) how to work in this repository. It
