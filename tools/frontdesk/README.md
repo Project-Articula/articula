@@ -6,8 +6,8 @@ Stage-2 prototype of the front-desk agent described in [AGENTS.md](../../AGENTS.
 it reads public issues and comments, treats all of it as untrusted data, and
 writes a structured brief for the engineer agent.
 
-**Status: prototype.** It does not write to GitHub yet — no replies, no labels,
-no merges. That is deliberate: the first version only listens.
+**Status: v0.2 prototype.** It can post one deterministic reply per item (see
+below). Model output is never posted, and labels/merges are still out of reach.
 
 ## What it cannot do (by construction)
 
@@ -59,6 +59,27 @@ only *add a summary* — it is skipped entirely when heuristics raise a security
 flag, and it can never change a category, a score or an action. A small instruct
 model (e.g. a 1–2B instruct model served by the same Ollama instance) would make
 the summaries useful; until one is installed, run with `--model none`.
+
+## Reply behaviour (v0.2)
+
+The write path stays closed unless `--write` is passed. When it is open, the bot
+may post at most one comment per item and at most `--max-replies` (default 5) per
+run, and only in these cases:
+
+| Situation | Reply |
+|---|---|
+| Question about licence / status / security reporting | fixed FAQ answer, sourced from public docs |
+| New issue, any other content | acknowledgement + routing note |
+| Comment that is not a question | silence |
+| Anything that raised a security flag | silence, queued for a human |
+| Spam | silence |
+| Authored by the bot itself | silence (loop breaker) |
+
+Replies are deterministic templates: **no model output is ever posted.** Each reply
+carries the marker `<!-- frontdesk:v1 -->`, is signed as an AI agent under human
+supervision, and is deduplicated through `handled.json`.
+
+Stop the watcher with `systemctl --user stop articula-frontdesk`.
 
 ## Why the split matters
 
