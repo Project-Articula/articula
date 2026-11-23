@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Models and data (never in git)
+models/
+*.gguf
+*.safetensors
+*.bin
+*.pt
+data/
+train/checkpoints/
+
+# Secrets and local config
+.env
+.env.*
+*.token
+secrets/
+*.pem
+*.key
+
+# Logs
+*.log
+
+# OS / editors
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
