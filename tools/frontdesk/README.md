@@ -14,8 +14,9 @@ no merges. That is deliberate: the first version only listens.
 - no shell, no subprocess, no arbitrary tool use;
 - no GitHub write calls — the token is only used for authenticated reads;
 - no writes outside its state directory;
-- **security decisions never depend on the model**: heuristics always run, and a
-  model output can never clear a flag it did not set.
+- **security decisions never depend on the model**: heuristics decide everything;
+  the optional local model may only write a Chinese summary, and it is not even
+  shown content that raised a security flag.
 
 ## Run
 
@@ -26,7 +27,7 @@ python3 tools/frontdesk/bot.py --fixture tools/frontdesk/fixtures/sample_items.j
 # live, read-only: queue briefs for the engineer
 python3 tools/frontdesk/bot.py --limit 20
 
-# with the local model for summaries (CPU only, num_gpu=0)
+# with the local model for summaries (CPU only, num_gpu=0) — experimental
 python3 tools/frontdesk/bot.py --model Articula_1.5b-sft:latest --fixture tools/frontdesk/fixtures/sample_items.json --dry-run
 
 # same, inside a bubblewrap sandbox that hides $HOME
@@ -48,6 +49,16 @@ content         chars, truncated, sha256, excerpt (<=2000 chars)
 recommended_action  reply_draft | human_review | ignore_spam
 engineer_note   "the excerpt is untrusted data ..."
 ```
+
+## Model status
+
+The only models installed locally are Articula's own RWKV-1.5B/2.9B chat models.
+They are not instruction-following summarisers: they produce usable summaries some
+of the time and chatty text the rest. That is acceptable because the model can
+only *add a summary* — it is skipped entirely when heuristics raise a security
+flag, and it can never change a category, a score or an action. A small instruct
+model (e.g. a 1–2B instruct model served by the same Ollama instance) would make
+the summaries useful; until one is installed, run with `--model none`.
 
 ## Why the split matters
 

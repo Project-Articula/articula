@@ -13,7 +13,8 @@
 - 沒有 shell、沒有子行程、沒有任意工具呼叫；
 - 沒有 GitHub 寫入呼叫——權杖只用於已驗證的讀取；
 - 除了自己的狀態目錄以外不寫入任何地方；
-- **安全判斷永遠不依賴模型**：啟發式規則一定會跑，模型輸出無法清除它沒設下的旗標。
+- **安全判斷永遠不依賴模型**：分類全部由啟發式規則決定；可選的本地模型只能寫中文摘要，
+  而且只要啟發式規則亮了旗標，模型連內容都看不到。
 
 ## 執行方式
 
@@ -24,7 +25,7 @@ python3 tools/frontdesk/bot.py --fixture tools/frontdesk/fixtures/sample_items.j
 # 連線、唯讀：把簡報排進佇列給工程師
 python3 tools/frontdesk/bot.py --limit 20
 
-# 加上本地模型產生中文摘要（純 CPU，num_gpu=0）
+# 加上本地模型產生中文摘要（純 CPU，num_gpu=0；實驗性）
 python3 tools/frontdesk/bot.py --model Articula_1.5b-sft:latest --fixture tools/frontdesk/fixtures/sample_items.json --dry-run
 
 # 同上，但跑在會隱藏 $HOME 的 bubblewrap 沙盒裡
@@ -46,6 +47,13 @@ content         chars、truncated、sha256、excerpt（<=2000 字元）
 recommended_action  reply_draft | human_review | ignore_spam
 engineer_note   「摘錄是不可信資料……」
 ```
+
+## 模型現況
+
+本機目前只有 Articula 自己的 RWKV-1.5B／2.9B 對話模型，它們不是聽話的摘要器：
+有時能給出可用的摘要，有時會閒聊。這可以接受，因為模型只能**附加摘要**——一旦啟發式
+規則亮旗標，它連內容都看不到，也永遠不能改變類別、分數或動作。若換成 1–2B 的
+instruct 模型（同一個 Ollama 服務），摘要就會有用；在那之前用 `--model none` 執行。
 
 ## 為什麼要切開
 

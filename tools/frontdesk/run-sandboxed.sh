@@ -21,7 +21,7 @@ exec bwrap \
   --ro-bind "$TOKEN_FILE" "$TOKEN_FILE" \
   --bind "$STATE_DIR" "$STATE_DIR" \
   --ro-bind "$HERE/.." "$HERE/.." \
-  --proc /proc --dev /dev --tmpfs /tmp \
+  --proc /proc --dev /dev \
   --unshare-pid --die-with-parent --new-session \
   --setenv FRONTDESK_TOKEN_FILE "$TOKEN_FILE" \
   --setenv FRONTDESK_STATE_DIR "$STATE_DIR" \
