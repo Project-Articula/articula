@@ -1,3 +1,5 @@
+[English](SECURITY.md) · [繁體中文](SECURITY.zh-TW.md)
+
 # Security policy
 
 ## Scope

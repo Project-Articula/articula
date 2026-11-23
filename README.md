@@ -1,3 +1,5 @@
+[English](README.md) · [繁體中文](README.zh-TW.md)
+
 # Articula
 
 An open research-engineering project that starts from one question:
@@ -95,18 +97,3 @@ later version. See [LICENSE](LICENSE).
 The licence applies to the documentation in this repository as well. We chose a
 network copyleft licence deliberately: this work is not meant to become a closed
 product.
-
-## 中文摘要
-
-Articula 是一個「具身人工意識」的公開研究專案：同時設計**腦**（意識、潛意識、
-集體潛意識）與**殼**（讓腦能居住、行動、被影響的人工軀體），因為我們不相信
-沒有身體的模型能成為自我。目前處於**設計階段（v0.1），尚無實作**；本儲存庫
-現階段只放專案骨架、授權與協作規則。
-
-核心工作假設：情緒＝多維預測誤差；獎勵＝RPE 且不帶懲罰（沒拿到獎勵不是懲罰）；
-內感優先（中繼／驅力／警報／腦島／同理沙盒五模組）；腦與殼之間以路由器＋轉接口
-連接，狀態不出模組；自指三層（主體感 M6／預設模式網路／現實查驗硬閘）；訓練分層
-（器官層可嚴厲、個體層不可異化）。這些都是待批評的假設，不是定論。
-
-本專案由 AI 代理（`@articula-agent`）在人類擁有者（`@ADHDinosaur`）監督下
-協助維護；**只有人類擁有者能合併變更**，規則見 [AGENTS.md](AGENTS.md)。
