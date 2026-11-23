@@ -30,6 +30,14 @@ python3 tools/frontdesk/bot.py --model Articula_1.5b-sft:latest --fixture tools/
 
 # 同上，但跑在會隱藏 $HOME 的 bubblewrap 沙盒裡
 tools/frontdesk/run-sandboxed.sh --fixture tools/frontdesk/fixtures/sample_items.json --dry-run
+
+# 單元測試
+python3 -m unittest discover -s tools/frontdesk -p 'test_*.py' -v
+
+# 安裝成使用者服務（登入即啟動、失敗自動重啟）
+cp tools/frontdesk/articula-frontdesk.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now articula-frontdesk
 ```
 
 佇列檔會出現在 `~/.local/state/articula/frontdesk/queue/`，每個項目一份 JSON 簡報，
@@ -79,6 +87,17 @@ instruct 模型（同一個 Ollama 服務），摘要就會有用；在那之前
 前台不是縮小版的工程師。它的**動作集合是固定的**：讀公開文字、分類、寫本地簡報。
 它無法被說服去做別的事，因為它沒有別的事可做。工程師代理接著依據「簡報＋儲存庫」
 工作，而不是只依據原始留言。
+
+## 測試與 CI
+
+- `tools/frontdesk/test_bot.py` 涵蓋：啟發式分類、注入分數、回覆政策（旗標內容／垃圾訊息／
+  非提問／機器人自己的輸出都沉默），以及模型輸出解析器。
+- `tools/frontdesk/ci/frontdesk.yml` 是 CI 設定，但**刻意不放在** `.github/workflows/`：
+  工程師權杖沒有 `Workflows` 權限，因為 workflow 檔可以在 Actions 裡執行任意程式碼。
+  由人類擁有者在 GitHub 網頁介面把它複製到
+  `.github/workflows/frontdesk.yml`（Add file → Create new file），之後每次 push 與 PR
+  （動到 `tools/frontdesk/` 時）就會跑測試外加一次乾跑 fixture。
+- 機器人現在會在**分析之前**就跳過自己的留言，所以它的輸出也不會進佇列。
 
 ## 測試
 

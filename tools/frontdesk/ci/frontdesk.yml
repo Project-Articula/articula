@@ -1,0 +1,26 @@
+name: frontdesk
+
+on:
+  push:
+    paths: ["tools/frontdesk/**", ".github/workflows/frontdesk.yml"]
+  pull_request:
+    paths: ["tools/frontdesk/**", ".github/workflows/frontdesk.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Unit tests (heuristics, reply policy, model parser)
+        run: python3 -m unittest discover -s tools/frontdesk -p 'test_*.py' -v
+      - name: Fixture run must not post anything
+        run: python3 tools/frontdesk/bot.py --fixture tools/frontdesk/fixtures/sample_items.json --dry-run --model none

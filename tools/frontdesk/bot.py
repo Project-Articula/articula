@@ -166,7 +166,7 @@ def parse_model_output(raw: str) -> dict:
     discarded. It never influences classification or security flags."""
     out = {"error": None, "summary_zh": None, "format": "free_text"}
     text = " ".join((raw or "").split())
-    text = re.sub(r"^(SUMMARY_ZH|摘要)\s*[:=]\s*", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"^(SUMMARY_ZH|摘要)\s*[:=：＝]\s*", "", text, flags=re.IGNORECASE)
     text = re.sub(r"^(BEGIN_UNTRUSTED|END_UNTRUSTED)\b", "", text).strip()
     if text:
         out["summary_zh"] = text[:300]
@@ -411,6 +411,9 @@ def process(items, args, model, token, state_dir) -> int:
     replies_posted = 0
     max_replies = args.max_replies
     for item in items:
+        # Loop breaker: never analyse our own output, and never re-queue it.
+        if item.get("author") == BOT_LOGIN or REPLY_MARKER in (item.get("body") or ""):
+            continue
         brief = build_brief(item, model)
         key = brief["item"]["id"]
         digest = brief["content"]["sha256"]
