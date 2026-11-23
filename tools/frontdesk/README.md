@@ -32,6 +32,14 @@ python3 tools/frontdesk/bot.py --model Articula_1.5b-sft:latest --fixture tools/
 
 # same, inside a bubblewrap sandbox that hides $HOME
 tools/frontdesk/run-sandboxed.sh --fixture tools/frontdesk/fixtures/sample_items.json --dry-run
+
+# unit tests
+python3 -m unittest discover -s tools/frontdesk -p 'test_*.py' -v
+
+# install as a user service (starts on login, restarts on failure)
+cp tools/frontdesk/articula-frontdesk.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now articula-frontdesk
 ```
 
 Queue files land in `~/.local/state/articula/frontdesk/queue/`, one JSON brief per
@@ -87,6 +95,21 @@ The front desk is not a smaller engineer. It has a *fixed action set*: read
 public text, classify, write a local brief. It cannot be talked into doing
 anything else because there is nothing else it can do. The engineer agent then
 works from the brief plus the repository, never from the raw comment alone.
+
+## Tests and CI
+
+- `tools/frontdesk/test_bot.py` covers the heuristic categories, the injection
+  scores, the reply policy (silence for flagged content, spam, non-questions and
+  the bot's own output) and the model-output parser.
+- `tools/frontdesk/ci/frontdesk.yml` is the CI configuration, but it is **not** in
+  `.github/workflows/` on purpose: the engineer token deliberately has no
+  `Workflows` permission, because a workflow file can execute arbitrary code in
+  Actions. The human owner copies it into place in the GitHub web UI
+  (`Add file → Create new file → .github/workflows/frontdesk.yml`), after which it
+  runs the tests plus a dry fixture run on every push and PR touching
+  `tools/frontdesk/`.
+- The bot now skips its own comments **before** analysis, so its output never
+  enters the queue either.
 
 ## Tests
 

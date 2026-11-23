@@ -1,0 +1,18 @@
+# User unit for the front desk. Install with:
+#   cp tools/frontdesk/articula-frontdesk.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now articula-frontdesk
+# Stop: systemctl --user stop articula-frontdesk
+[Unit]
+Description=Articula front desk (sandboxed triage agent)
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/articula/tools/frontdesk/run-sandboxed.sh --watch --write --interval 90 --limit 10
+Restart=on-failure
+RestartSec=30
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target
