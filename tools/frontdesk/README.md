@@ -101,13 +101,12 @@ works from the brief plus the repository, never from the raw comment alone.
 - `tools/frontdesk/test_bot.py` covers the heuristic categories, the injection
   scores, the reply policy (silence for flagged content, spam, non-questions and
   the bot's own output) and the model-output parser.
-- `tools/frontdesk/ci/frontdesk.yml` is the CI configuration, but it is **not** in
-  `.github/workflows/` on purpose: the engineer token deliberately has no
-  `Workflows` permission, because a workflow file can execute arbitrary code in
-  Actions. The human owner copies it into place in the GitHub web UI
-  (`Add file → Create new file → .github/workflows/frontdesk.yml`), after which it
-  runs the tests plus a dry fixture run on every push and PR touching
-  `tools/frontdesk/`.
+- `.github/workflows/frontdesk.yml` runs the tests plus a dry fixture run on every
+  push and PR touching `tools/frontdesk/`.
+- Workflow files can execute arbitrary code in Actions, so they need the
+  `Workflows` token permission. The engineer token originally did not have it; the
+  owner granted it on 2026-11-24 so the agent can maintain CI. The workflow only
+  runs the repository's own tests and receives no secrets.
 - The bot now skips its own comments **before** analysis, so its output never
   enters the queue either.
 

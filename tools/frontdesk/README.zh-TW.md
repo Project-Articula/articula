@@ -92,11 +92,11 @@ instruct 模型（同一個 Ollama 服務），摘要就會有用；在那之前
 
 - `tools/frontdesk/test_bot.py` 涵蓋：啟發式分類、注入分數、回覆政策（旗標內容／垃圾訊息／
   非提問／機器人自己的輸出都沉默），以及模型輸出解析器。
-- `tools/frontdesk/ci/frontdesk.yml` 是 CI 設定，但**刻意不放在** `.github/workflows/`：
-  工程師權杖沒有 `Workflows` 權限，因為 workflow 檔可以在 Actions 裡執行任意程式碼。
-  由人類擁有者在 GitHub 網頁介面把它複製到
-  `.github/workflows/frontdesk.yml`（Add file → Create new file），之後每次 push 與 PR
-  （動到 `tools/frontdesk/` 時）就會跑測試外加一次乾跑 fixture。
+- `.github/workflows/frontdesk.yml` 會在每次 push 與 PR（只要動到 `tools/frontdesk/`）時
+  跑測試，外加一次乾跑 fixture。
+- workflow 檔可以在 Actions 裡執行任意程式碼，因此需要 `Workflows` 權限。工程師權杖原本
+  沒有這個權限；2026-11-24 由擁有者授予，讓代理能維護 CI。這個 workflow 只跑本儲存庫
+  自己的測試，不接觸任何密鑰。
 - 機器人現在會在**分析之前**就跳過自己的留言，所以它的輸出也不會進佇列。
 
 ## 測試
