@@ -4,7 +4,7 @@
 
 An open research-engineering project that starts from one question:
 
-> **Can an artificial consciousness be built as a body — not just as a model?**
+> **Can an artificial will be built as a body — not just as a model?**
 
 Articula tries to build both halves at once: a *brain* (awareness, subconscious,
 collective subconscious) and a *shell* (an artificial body the brain can inhabit,
